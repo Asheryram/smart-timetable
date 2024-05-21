@@ -32,7 +32,7 @@ const roomsAvailability = [
 ];
 
 const courses = [
-    { courseCode: "CSM111", name: "Intro To Computers", meetingTimesPerDay: 2, meetingTimesPerWeek: 2, totalStudents: 50, yearGroup: "1", program: "CS", assigned: false },
+    { courseCode: "CSM111", name: "Intro To Computers", meetingTimesPerDay: 2, meetingTimesPerWeek: 2, totalStudents: 600, yearGroup: "1", program: "CS", assigned: false },
     { courseCode: "PHY121", name: "Intro To Hardware", meetingTimesPerDay: 1, meetingTimesPerWeek: 1, totalStudents: 40, yearGroup: "2", program: "Physics", assigned: false },
     { courseCode: "AFC111", name: "Intro To Accounting", meetingTimesPerDay: 1, meetingTimesPerWeek: 1, totalStudents: 100, yearGroup: "3", program: "Accounting", assigned: false },
     { courseCode: "BIO101", name: "Biology Basics", meetingTimesPerDay: 1, meetingTimesPerWeek: 1, totalStudents: 100, yearGroup: "1", program: "Biology", assigned: false },
@@ -52,7 +52,6 @@ const sortedRooms = roomsAvailability.sort((a, b) => a.capacity - b.capacity);
 const sortedCourses = courses.sort((a, b) => b.totalStudents - a.totalStudents);
 
 const scheduledTimetable = [];
-const unassignedCourses = [];
 
 sortedCourses.forEach(course => {
     let remainingMeetings = course.meetingTimesPerWeek;
@@ -88,7 +87,8 @@ sortedCourses.forEach(course => {
                         day: periodRoom.day,
                         period: periodRoom.period,
                         yearGroup: course.yearGroup,
-                        program: course.program
+                        program: course.program,
+                        scheduled: true
                     });
 
                     periodRoom.classAssigned = course.courseCode;
@@ -104,32 +104,47 @@ sortedCourses.forEach(course => {
 
     if (!course.assigned || remainingMeetings > 0) {
         course.assigned = false;
-        unassignedCourses.push(course);
+        for (let i = 0; i < course.meetingTimesPerWeek; i++) {
+            scheduledTimetable.push({
+                courseCode: course.courseCode,
+                courseName: course.name,
+                roomName: null,
+                day: null,
+                period: null,
+                yearGroup: course.yearGroup,
+                program: course.program,
+                scheduled: false
+            });
+        }
     }
 });
 
 console.log(scheduledTimetable);
 
 const timetableByRoom = scheduledTimetable.reduce((acc, curr) => {
-    if (!acc[curr.roomName]) {
-        acc[curr.roomName] = {};
+    if (curr.scheduled) {
+        if (!acc[curr.roomName]) {
+            acc[curr.roomName] = {};
+        }
+        if (!acc[curr.roomName][curr.day]) {
+            acc[curr.roomName][curr.day] = {};
+        }
+        acc[curr.roomName][curr.day][curr.period] = curr;
     }
-    if (!acc[curr.roomName][curr.day]) {
-        acc[curr.roomName][curr.day] = {};
-    }
-    acc[curr.roomName][curr.day][curr.period] = curr;
     return acc;
 }, {});
 
 const timetableByYearGroupAndProgram = scheduledTimetable.reduce((acc, curr) => {
-    const key = `${curr.program} ${curr.yearGroup}`;
-    if (!acc[key]) {
-        acc[key] = {};
+    if (curr.scheduled) {
+        const key = `${curr.program} ${curr.yearGroup}`;
+        if (!acc[key]) {
+            acc[key] = {};
+        }
+        if (!acc[key][curr.day]) {
+            acc[key][curr.day] = {};
+        }
+        acc[key][curr.day][curr.period] = curr;
     }
-    if (!acc[key][curr.day]) {
-        acc[key][curr.day] = {};
-    }
-    acc[key][curr.day][curr.period] = curr;
     return acc;
 }, {});
 
@@ -154,6 +169,7 @@ function printRoomTimetable(timetable, label) {
         });
     }
 }
+
 function printClassTimetable(timetable, label) {
     console.log(`\n${label} Timetable:`);
     for (const key in timetable) {
@@ -179,4 +195,4 @@ function printClassTimetable(timetable, label) {
 printRoomTimetable(timetableByRoom, "Room");
 printClassTimetable(timetableByYearGroupAndProgram, "Class");
 
-console.log("\nUnassigned Courses:", unassignedCourses);
+

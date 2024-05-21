@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
-const PeriodSchema = new mongoose.Schema({
-    periodNumber: { type: Number, required: true }
+const periodSchema = new mongoose.Schema({
+    periodName: { type: String, required: true },
+    periodRange: { type: String, required: true }
 });
-const Period = mongoose.model('Period', PeriodSchema)
-module.exports = Period;
+
+module.exports = mongoose.model('Period', periodSchema);

@@ -1,9 +1,7 @@
-
 const mongoose = require('mongoose');
 
-const DaySchema = new mongoose.Schema({
+const daySchema = new mongoose.Schema({
     dayName: { type: String, required: true }
 });
 
-const Day = mongoose.model('Day', DaySchema)
-module.exports =Day ;
+module.exports = mongoose.model('Day', daySchema);
