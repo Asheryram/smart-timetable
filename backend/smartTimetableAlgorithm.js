@@ -10,14 +10,45 @@ const roomsAvailability = [
     { name: "FF2", capacity: 90, available: true, period: 3, day: "Monday", classAssigned: "None" },
     { name: "FF2", capacity: 90, available: true, period: 4, day: "Monday", classAssigned: "None" },
     { name: "FF2", capacity: 90, available: true, period: 5, day: "Monday", classAssigned: "None" },
-    { name: "FF2", capacity: 90, available: true, period: 6, day: "Monday", classAssigned: "None" }
+    { name: "FF2", capacity: 90, available: true, period: 6, day: "Monday", classAssigned: "None" },
+    { name: "FF3", capacity: 60, available: true, period: 1, day: "Tuesday", classAssigned: "None" },
+    { name: "FF3", capacity: 60, available: true, period: 2, day: "Tuesday", classAssigned: "None" },
+    { name: "FF3", capacity: 60, available: true, period: 3, day: "Tuesday", classAssigned: "None" },
+    { name: "FF3", capacity: 60, available: true, period: 4, day: "Tuesday", classAssigned: "None" },
+    { name: "FF3", capacity: 60, available: true, period: 5, day: "Tuesday", classAssigned: "None" },
+    { name: "FF3", capacity: 60, available: true, period: 6, day: "Tuesday", classAssigned: "None" },
+    { name: "FF4", capacity: 80, available: true, period: 1, day: "Wednesday", classAssigned: "None" },
+    { name: "FF4", capacity: 80, available: true, period: 2, day: "Wednesday", classAssigned: "None" },
+    { name: "FF4", capacity: 80, available: true, period: 3, day: "Wednesday", classAssigned: "None" },
+    { name: "FF4", capacity: 80, available: true, period: 4, day: "Wednesday", classAssigned: "None" },
+    { name: "FF4", capacity: 80, available: true, period: 5, day: "Wednesday", classAssigned: "None" },
+    { name: "FF4", capacity: 80, available: true, period: 6, day: "Wednesday", classAssigned: "None" },
+    { name: "FF5", capacity: 100, available: true, period: 1, day: "Thursday", classAssigned: "None" },
+    { name: "FF5", capacity: 100, available: true, period: 2, day: "Thursday", classAssigned: "None" },
+    { name: "FF5", capacity: 100, available: true, period: 3, day: "Thursday", classAssigned: "None" },
+    { name: "FF5", capacity: 100, available: true, period: 4, day: "Thursday", classAssigned: "None" },
+    { name: "FF5", capacity: 100, available: true, period: 5, day: "Thursday", classAssigned: "None" },
+    { name: "FF5", capacity: 100, available: true, period: 6, day: "Thursday", classAssigned: "None" }
 ];
+
 
 const courses = [
     { courseCode: "CSM111", name: "Intro To Computers", meetingTimesPerDay: 2, meetingTimesPerWeek: 2, totalStudents: 50, yearGroup: "1", program: "CS", assigned: false },
     { courseCode: "PHY121", name: "Intro To Hardware", meetingTimesPerDay: 1, meetingTimesPerWeek: 1, totalStudents: 40, yearGroup: "2", program: "Physics", assigned: false },
     { courseCode: "AFC111", name: "Intro To Accounting", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 80, yearGroup: "3", program: "Accounting", assigned: false },
+    { courseCode: "BIO101", name: "Biology Basics", meetingTimesPerDay: 1, meetingTimesPerWeek: 3, totalStudents: 60, yearGroup: "1", program: "Biology", assigned: false },
+    { courseCode: "CHE101", name: "Chemistry Basics", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 45, yearGroup: "1", program: "Chemistry", assigned: false },
+    { courseCode: "MTH101", name: "Mathematics I", meetingTimesPerDay: 2, meetingTimesPerWeek: 3, totalStudents: 70, yearGroup: "1", program: "Mathematics", assigned: false },
+    { courseCode: "ENG101", name: "English Composition", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 55, yearGroup: "2", program: "English", assigned: false },
+    { courseCode: "HIS101", name: "World History", meetingTimesPerDay: 1, meetingTimesPerWeek: 1, totalStudents: 35, yearGroup: "3", program: "History", assigned: false },
+    { courseCode: "PHY201", name: "Advanced Physics", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 50, yearGroup: "3", program: "Physics", assigned: false },
+    { courseCode: "CSC201", name: "Data Structures", meetingTimesPerDay: 2, meetingTimesPerWeek: 3, totalStudents: 60, yearGroup: "2", program: "CS", assigned: false },
+    { courseCode: "ECO101", name: "Introduction to Economics", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 40, yearGroup: "1", program: "Economics", assigned: false },
+    { courseCode: "STA101", name: "Statistics I", meetingTimesPerDay: 1, meetingTimesPerWeek: 3, totalStudents: 30, yearGroup: "2", program: "Statistics", assigned: false },
+    { courseCode: "ART101", name: "Art History", meetingTimesPerDay: 1, meetingTimesPerWeek: 1, totalStudents: 20, yearGroup: "1", program: "Art", assigned: false },
+    { courseCode: "PSY101", name: "Introduction to Psychology", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 40, yearGroup: "2", program: "Psychology", assigned: false }
 ];
+
 
 const sortedRooms = roomsAvailability.sort((a, b) => a.capacity - b.capacity);
 const sortedCourses = courses.sort((a, b) => b.totalStudents - a.totalStudents);
