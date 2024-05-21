@@ -116,7 +116,7 @@ const scheduleAllCourses = async (req, res) => {
         await initializeRoomAvailability(periodCode);
 
         // Fetch courses
-        const courses = await Course.find({ periodCode });
+        const courses = await Course.find();
 
         // Query student counts for each course
         const courseStudentCounts = await Student.aggregate([

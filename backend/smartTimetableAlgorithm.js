@@ -14,9 +14,9 @@ const roomsAvailability = [
 ];
 
 const courses = [
-    { courseCode: "CSM111", name: "Intro To Computers", meetingTimesPerDay: 2, meetingTimesPerWeek: 2, totalStudents: 50, yearGroup: "Year 1", program: "CS", assigned: false },
-    { courseCode: "PHY121", name: "Intro To Hardware", meetingTimesPerDay: 1, meetingTimesPerWeek: 1, totalStudents: 40, yearGroup: "Year 2", program: "Physics", assigned: false },
-    { courseCode: "AFC111", name: "Intro To Accounting", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 80, yearGroup: "Year 3", program: "Accounting", assigned: false },
+    { courseCode: "CSM111", name: "Intro To Computers", meetingTimesPerDay: 2, meetingTimesPerWeek: 2, totalStudents: 50, yearGroup: "1", program: "CS", assigned: false },
+    { courseCode: "PHY121", name: "Intro To Hardware", meetingTimesPerDay: 1, meetingTimesPerWeek: 1, totalStudents: 40, yearGroup: "2", program: "Physics", assigned: false },
+    { courseCode: "AFC111", name: "Intro To Accounting", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 80, yearGroup: "3", program: "Accounting", assigned: false },
 ];
 
 const sortedRooms = roomsAvailability.sort((a, b) => a.capacity - b.capacity);
@@ -120,6 +120,8 @@ sortedCourses.forEach(course => {
     }
 });
 
+console.log(scheduledTimetable)
+
 const timetableByRoom = scheduledTimetable.reduce((acc, curr) => {
     if (!acc[curr.roomName]) {
         acc[curr.roomName] = {};
@@ -132,7 +134,7 @@ const timetableByRoom = scheduledTimetable.reduce((acc, curr) => {
 }, {});
 
 const timetableByYearGroupAndProgram = scheduledTimetable.reduce((acc, curr) => {
-    const key = `${curr.program} ${curr.yearGroup.split(" ")[1]}`;
+    const key = `${curr.program} ${curr.yearGroup}`;
     if (!acc[key]) {
         acc[key] = {};
     }
@@ -143,7 +145,7 @@ const timetableByYearGroupAndProgram = scheduledTimetable.reduce((acc, curr) => 
     return acc;
 }, {});
 
-function printTimetable(timetable, label) {
+function printRoomTimetable(timetable, label) {
     console.log(`\n${label} Timetable:`);
     for (const key in timetable) {
         console.log(`\n${label} ${key}`);
@@ -154,8 +156,29 @@ function printTimetable(timetable, label) {
             const row = [day];
             for (let period = 1; period <= 10; period++) {
                 if (timetable[key][day] && timetable[key][day][period]) {
-                    const { courseCode } = timetable[key][day][period];
-                    row.push(`${courseCode}`.padEnd(16));
+                    const { courseCode, program ,yearGroup} = timetable[key][day][period];
+                    row.push(`${courseCode}  ${program} ${yearGroup}`.padEnd(16));
+                } else {
+                    row.push("".padEnd(16));
+                }
+            }
+            console.log(row.join(" | "));
+        });
+    }
+}
+function printClassTimetable(timetable, label) {
+    console.log(`\n${label} Timetable:`);
+    for (const key in timetable) {
+        console.log(`\n${label} ${key}`);
+        console.log("Days    | Period 1       | Period 2       | Period 3       | Period 4       | Period 5       | Period 6       | Period 7       | Period 8       | Period 9       | Period 10      ");
+        console.log("--------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------");
+
+        ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].forEach(day => {
+            const row = [day];
+            for (let period = 1; period <= 10; period++) {
+                if (timetable[key][day] && timetable[key][day][period]) {
+                    const { courseCode, roomName } = timetable[key][day][period];
+                    row.push(`${courseCode} (${roomName})`.padEnd(16));
                 } else {
                     row.push("".padEnd(16));
                 }
@@ -165,7 +188,7 @@ function printTimetable(timetable, label) {
     }
 }
 
-printTimetable(timetableByRoom, "Room");
-printTimetable(timetableByYearGroupAndProgram, "");
+printRoomTimetable(timetableByRoom, "Room");
+printClassTimetable(timetableByYearGroupAndProgram, " Class");
 
 console.log("\nUnassigned Courses:", unassignedCourses);
