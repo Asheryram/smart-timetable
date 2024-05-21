@@ -81,9 +81,9 @@ const populateData = async (req, res) => {
 
         // Sample data for Students
         const students = [
-            { studentId: 'S001', name: 'Alice', program: programDocs.find(p => p.programName === 'Computer Science')._id, yearGroup: 2024 },
-            { studentId: 'S002', name: 'Bob', program: programDocs.find(p => p.programName === 'Computer Science')._id, yearGroup: 2024 },
-            { studentId: 'S003', name: 'Charlie', program: programDocs.find(p => p.programName === 'Statistics')._id, yearGroup: 2024 }
+            { studentId: 'S001', name: 'Alice', program: programDocs.find(p => p.programName === 'Computer Science')._id, yearGroup: 2024,course : "6648953320a535a519a37ccc" },
+            { studentId: 'S002', name: 'Bob', program: programDocs.find(p => p.programName === 'Computer Science')._id, yearGroup: 2024,course : "6648953320a535a519a37ccc"  },
+            { studentId: 'S003', name: 'Charlie', program: programDocs.find(p => p.programName === 'Statistics')._id, yearGroup: 2024,course : "6648953320a535a519a37ccc"  }
         ];
 
         for (const student of students) {
