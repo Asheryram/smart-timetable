@@ -3,8 +3,9 @@ const { getFilteredRooms } = require("./roomAvailabilityController");
 const { getFilteredCourses } = require("./courseController");
 
 const getAllSchedules = async (req, res) => {
+	const {code} = req.params
 	try {
-		const timeTable = await TimeTable.find();
+		const timeTable = await TimeTable.find({code});
 		res.status(200).json(timeTable);
 	} catch (error) {
 		res.status(500).json({ error: error.message });
