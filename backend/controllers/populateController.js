@@ -46,11 +46,11 @@ const populateDatabase = async (req, res) => {
 
 		// Populate Room
 		const rooms = [
-			{ roomName: "FF1", roomCapacity: 70, roomTypeId: savedRoomTypes[4]._id },
-			{ roomName: "FF2", roomCapacity: 90, roomTypeId: savedRoomTypes[0]._id },
-			{ roomName: "FF3", roomCapacity: 60, roomTypeId: savedRoomTypes[1]._id },
-			{ roomName: "FF4", roomCapacity: 80, roomTypeId: savedRoomTypes[2]._id },
-			{ roomName: "FF5", roomCapacity: 100, roomTypeId: savedRoomTypes[3]._id },
+			{ roomName: "FF1", roomCapacity: 230, roomTypeId: savedRoomTypes[4]._id },
+			{ roomName: "FF2", roomCapacity: 220, roomTypeId: savedRoomTypes[0]._id },
+			{ roomName: "FF3", roomCapacity: 200, roomTypeId: savedRoomTypes[1]._id },
+			{ roomName: "FF4", roomCapacity: 250, roomTypeId: savedRoomTypes[2]._id },
+			{ roomName: "FF5", roomCapacity: 300, roomTypeId: savedRoomTypes[3]._id },
 		];
 		const savedRooms = await Room.insertMany(rooms);
 		console.log("Populate days...");

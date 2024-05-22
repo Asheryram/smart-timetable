@@ -1,8 +1,9 @@
 const express = require('express');
-const  {getAllSchedules}= require('../controllers/timeTableController');
+const  {getAllSchedules,generateAllSchedules}= require('../controllers/timeTableController');
 const router = express.Router();
 
 router.get('/:code', getAllSchedules);
+router.post('/:code', generateAllSchedules);
 
 
 module.exports = router;

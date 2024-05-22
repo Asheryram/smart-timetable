@@ -8,7 +8,8 @@ const timeTableSchema = new mongoose.Schema({
     period: { type: String, required: true },
     yearGroup: { type: String, required: true },
     program: { type: String, required: true },
-    scheduled: { type: Boolean, required: true }
+    scheduled: { type: Boolean, required: true },
+    code: { type: String, required: true }
 });
 
 module.exports = mongoose.model('TimeTable', timeTableSchema);
