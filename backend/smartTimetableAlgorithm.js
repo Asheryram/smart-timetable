@@ -48,38 +48,133 @@ const courses = [
     { courseCode: "PSY101", name: "Introduction to Psychology", meetingTimesPerDay: 1, meetingTimesPerWeek: 2, totalStudents: 40, yearGroup: "2", program: "Psychology", assigned: false }
 ];
 
-const sortedRooms = roomsAvailability.sort((a, b) => a.capacity - b.capacity);
-const sortedCourses = courses.sort((a, b) => b.totalStudents - a.totalStudents);
+// const sortedRooms = roomsAvailability.sort((a, b) => a.capacity - b.capacity);
+// const sortedCourses = courses.sort((a, b) => b.totalStudents - a.totalStudents);
 
+// const scheduledTimetable = [];
+
+// sortedCourses.forEach(course => {
+//     let remainingMeetings = course.meetingTimesPerWeek;
+//     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+//     let dayIndex = 0;
+
+//     while (remainingMeetings > 0 && dayIndex < days.length) {
+//         const day = days[dayIndex];
+//         const availableRooms = sortedRooms.filter(room =>
+//             room.day === day &&
+//             room.available &&
+//             room.capacity >= course.totalStudents &&
+//             room.classAssigned === "None"
+//         );
+
+//         for (let room of availableRooms) {
+//             if (remainingMeetings <= 0) break;
+
+//             const roomPeriods = sortedRooms.filter(r =>
+//                 r.name === room.name &&
+//                 r.day === day &&
+//                 r.available &&
+//                 r.classAssigned === "None"
+//             );
+
+//             if (roomPeriods.length >= course.meetingTimesPerDay) {
+//                 for (let i = 0; i < course.meetingTimesPerDay && remainingMeetings > 0; i++) {
+//                     const periodRoom = roomPeriods[i];
+//                     scheduledTimetable.push({
+//                         courseCode: course.courseCode,
+//                         courseName: course.name,
+//                         roomName: periodRoom.name,
+//                         day: periodRoom.day,
+//                         period: periodRoom.period,
+//                         yearGroup: course.yearGroup,
+//                         program: course.program,
+//                         scheduled: true
+//                     });
+
+//                     periodRoom.classAssigned = course.courseCode;
+//                     periodRoom.available = false;
+//                     remainingMeetings -= 1;
+//                 }
+//                 course.assigned = true;
+//             }
+//         }
+
+//         dayIndex += 1;
+//     }
+
+//     if (!course.assigned || remainingMeetings > 0) {
+//         course.assigned = false;
+//         for (let i = 0; i < course.meetingTimesPerWeek; i++) {
+//             scheduledTimetable.push({
+//                 courseCode: course.courseCode,
+//                 courseName: course.name,
+//                 roomName: null,
+//                 day: null,
+//                 period: null,
+//                 yearGroup: course.yearGroup,
+//                 program: course.program,
+//                 scheduled: false
+//             });
+//         }
+//     }
+// });
+
+
+
+
+// Sort rooms in descending order of capacity (largest rooms first)
+let sortedRooms = roomsAvailability.sort((a, b) => b.capacity - a.capacity);
+// Sort courses in descending order of number of students (largest classes first)
+const sortedCourses = courses.sort(
+    (a, b) => b.totalStudents - a.totalStudents
+);
+
+// Array to store the scheduled timetable entries
 const scheduledTimetable = [];
+// Array to track unscheduled courses
+const unscheduledCourses = [];
 
-sortedCourses.forEach(course => {
+// First scheduling for optimized rooms with their courses
+for (const course of sortedCourses) {
     let remainingMeetings = course.meetingTimesPerWeek;
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
     let dayIndex = 0;
+    let courseAssigned = false;
 
+    // Try to assign meetings to available rooms
     while (remainingMeetings > 0 && dayIndex < days.length) {
         const day = days[dayIndex];
-        const availableRooms = sortedRooms.filter(room =>
-            room.day === day &&
-            room.available &&
-            room.capacity >= course.totalStudents &&
-            room.classAssigned === "None"
+        // Filter rooms based on availability and capacity for the current day
+        const availableRooms = sortedRooms.filter(
+            (room) =>
+                room.day === day &&
+                room.available &&
+                room.capacity >= course.totalStudents &&
+                room.classAssigned === "None"
         );
 
+        // Try to schedule the course in the available rooms
         for (let room of availableRooms) {
             if (remainingMeetings <= 0) break;
 
-            const roomPeriods = sortedRooms.filter(r =>
-                r.name === room.name &&
-                r.day === day &&
-                r.available &&
-                r.classAssigned === "None"
+            // Find available periods in the room
+            const roomPeriods = sortedRooms.filter(
+                (r) =>
+                    r.name === room.name &&
+                    r.day === day &&
+                    r.available &&
+                    r.classAssigned === "None"
             );
 
             if (roomPeriods.length >= course.meetingTimesPerDay) {
-                for (let i = 0; i < course.meetingTimesPerDay && remainingMeetings > 0; i++) {
+                // Schedule meetings for the course in the available periods
+                for (
+                    let i = 0;
+                    i < course.meetingTimesPerDay && remainingMeetings > 0;
+                    i++
+                ) {
                     const periodRoom = roomPeriods[i];
+
                     scheduledTimetable.push({
                         courseCode: course.courseCode,
                         courseName: course.name,
@@ -88,36 +183,160 @@ sortedCourses.forEach(course => {
                         period: periodRoom.period,
                         yearGroup: course.yearGroup,
                         program: course.program,
-                        scheduled: true
+                        code,
+                        scheduled: true, // Mark as successfully scheduled
                     });
 
+                    // Update room availability in the database
+                    const roomDoc = await Room.findOne({ roomName: periodRoom.name });
+                    const periodDoc = await Period.findOne({
+                        periodName: periodRoom.period,
+                    });
+                    const dayDoc = await Day.findOne({ dayName: periodRoom.day });
+
+                    if (roomDoc && periodDoc && dayDoc) {
+                        await RoomAvailability.updateOne(
+                            {
+                                roomId: roomDoc._id,
+                                dayId: dayDoc._id,
+                                periodId: periodDoc._id,
+                            },
+                            { $set: { isAvailable: false } }
+                        );
+                    } else {
+                        console.warn("Room, period, or day not found for:", periodRoom);
+                    }
+
+                    // Update room state in the sortedRooms array
                     periodRoom.classAssigned = course.courseCode;
                     periodRoom.available = false;
                     remainingMeetings -= 1;
+
+                    sortedRooms = sortedRooms.map((r) =>
+                        r.name === periodRoom.name &&
+                        r.day === periodRoom.day &&
+                        r.period === periodRoom.period
+                            ? { ...r, available: false, classAssigned: course.courseCode }
+                            : r
+                    );
                 }
-                course.assigned = true;
+                courseAssigned = true;
             }
         }
-
         dayIndex += 1;
     }
 
-    if (!course.assigned || remainingMeetings > 0) {
-        course.assigned = false;
-        for (let i = 0; i < course.meetingTimesPerWeek; i++) {
-            scheduledTimetable.push({
-                courseCode: course.courseCode,
-                courseName: course.name,
-                roomName: null,
-                day: null,
-                period: null,
-                yearGroup: course.yearGroup,
-                program: course.program,
-                scheduled: false
-            });
-        }
+    // If there are remaining meetings that couldn't be scheduled
+    if (!courseAssigned || remainingMeetings > 0) {
+        unscheduledCourses.push({
+            courseCode: course.courseCode,
+            courseName: course.name,
+            yearGroup: course.yearGroup,
+            program: course.program,
+            code,
+            scheduled: false, // Mark as unscheduled
+        });
     }
-});
+}
+
+// Fetch updated room availability for unscheduled courses
+const updatedRoomsAvailability = await getFilteredRooms(); // Get current room availability
+
+// Sort updated rooms again in descending order of capacity for the second pass
+let sortedUpdatedRooms = updatedRoomsAvailability.sort(
+    (a, b) => b.capacity - a.capacity
+);
+
+// ---------------------------------------------------------- Second scheduling after the optimal classes one is scheduled--------------------------------------------------
+for (const course of unscheduledCourses) {
+    let remainingMeetings = course.meetingTimesPerWeek;
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    let dayIndex = 0;
+
+    // Try to assign meetings to available rooms
+    while (remainingMeetings > 0 && dayIndex < days.length) {
+        const day = days[dayIndex];
+        // Filter rooms based on availability for the current day
+        const availableRooms = sortedUpdatedRooms.filter(
+            (room) =>
+                room.day === day && room.available && room.classAssigned === "None"
+        );
+
+        // Try to schedule the course in the available rooms
+        for (let room of availableRooms) {
+            if (remainingMeetings <= 0) break;
+
+            // Find available periods in the room
+            const roomPeriods = sortedUpdatedRooms.filter(
+                (r) =>
+                    r.name === room.name &&
+                    r.day === day &&
+                    r.available &&
+                    r.classAssigned === "None"
+            );
+
+            if (roomPeriods.length > 0) {
+                // Schedule meetings for the course in the available periods
+                for (
+                    let i = 0;
+                    i < roomPeriods.length && remainingMeetings > 0;
+                    i++
+                ) {
+                    const periodRoom = roomPeriods[i];
+
+                    scheduledTimetable.push({
+                        courseCode: course.courseCode,
+                        courseName: course.courseName,
+                        roomName: periodRoom.name,
+                        day: periodRoom.day,
+                        period: periodRoom.period,
+                        yearGroup: course.yearGroup,
+                        program: course.program,
+                        code,
+                        scheduled: false, // Indicate that it was scheduled in the second phase
+                    });
+                    // Update room availability in the database again
+                    const roomDoc = await Room.findOne({ roomName: periodRoom.name });
+                    const periodDoc = await Period.findOne({
+                        periodName: periodRoom.period,
+                    });
+                    const dayDoc = await Day.findOne({ dayName: periodRoom.day });
+
+                    if (roomDoc && periodDoc && dayDoc) {
+                        await RoomAvailability.updateOne(
+                            {
+                                roomId: roomDoc._id,
+                                dayId: dayDoc._id,
+                                periodId: periodDoc._id,
+                            },
+                            { $set: { isAvailable: false } }
+                        );
+                    } else {
+                        console.warn("Room, period, or day not found for:", periodRoom);
+                    }
+
+                    // Update room state in the sortedUpdatedRooms array
+                    periodRoom.classAssigned = course.courseCode;
+                    periodRoom.available = false;
+                    remainingMeetings -= 1;
+
+                    sortedUpdatedRooms = sortedUpdatedRooms.map((r) =>
+                        r.name === periodRoom.name &&
+                        r.day === periodRoom.day &&
+                        r.period === periodRoom.period
+                            ? { ...r, available: false, classAssigned: course.courseCode }
+                            : r
+                    );
+                }
+            }
+        }
+        dayIndex += 1;
+    }
+}
+
+
+
+
 
 console.log(scheduledTimetable);
 

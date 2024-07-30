@@ -8,6 +8,7 @@ const RoomType = require("../models/RoomType");
 const YearGroup = require("../models/YearGroup");
 const Student = require("../models/Student");
 const StudentCourse = require("../models/StudentCourse");
+const  TimeTable = require("../models/TimeTable");
 
 const populateDatabase = async (req, res) => {
 	try {
@@ -15,6 +16,7 @@ const populateDatabase = async (req, res) => {
 
 		// Clear existing data
 		await Promise.all([
+			TimeTable.deleteMany({}),
 			RoomAvailability.deleteMany({}),
 			Course.deleteMany({}),
 			Day.deleteMany({}),
@@ -37,7 +39,7 @@ const populateDatabase = async (req, res) => {
 				roomTypeName: "Computer Lab",
 				description: "Computational Sciences lab",
 			},
-			{ roomTypeName: "Office", description: "Lecturer room" },
+			{ roomTypeName: "Office", description: "Lecturer office" },
 			{ roomTypeName: "Class", description: "Classroom" },
 		];
 
@@ -46,11 +48,11 @@ const populateDatabase = async (req, res) => {
 
 		// Populate Room
 		const rooms = [
-			{ roomName: "FF1", roomCapacity: 230, roomTypeId: savedRoomTypes[4]._id },
-			{ roomName: "FF2", roomCapacity: 220, roomTypeId: savedRoomTypes[0]._id },
+			// { roomName: "FF1", roomCapacity: 230, roomTypeId: savedRoomTypes[4]._id },
+			// { roomName: "FF2", roomCapacity: 220, roomTypeId: savedRoomTypes[0]._id },
 			{ roomName: "FF3", roomCapacity: 200, roomTypeId: savedRoomTypes[1]._id },
-			{ roomName: "FF4", roomCapacity: 250, roomTypeId: savedRoomTypes[2]._id },
-			{ roomName: "FF5", roomCapacity: 300, roomTypeId: savedRoomTypes[3]._id },
+			{ roomName: "FF4", roomCapacity: 150, roomTypeId: savedRoomTypes[2]._id },
+			{ roomName: "FF5", roomCapacity: 2, roomTypeId: savedRoomTypes[3]._id },
 		];
 		const savedRooms = await Room.insertMany(rooms);
 		console.log("Populate days...");
@@ -68,16 +70,16 @@ const populateDatabase = async (req, res) => {
 
 		// Populate Period
 		const periods = [
-			{ periodName: " 1", periodRange: "08:00-09:00" },
-			{ periodName: " 2", periodRange: "09:00-10:00" },
-			{ periodName: " 3", periodRange: "10:00-11:00" },
-			{ periodName: " 4", periodRange: "11:00-12:00" },
-			{ periodName: " 5", periodRange: "12:00-13:00" },
-			{ periodName: " 6", periodRange: "13:00-14:00" },
-			{ periodName: " 7", periodRange: "14:00-15:00" },
-			{ periodName: " 8", periodRange: "15:00-16:00" },
-			{ periodName: " 9", periodRange: "16:00-17:00" },
-			{ periodName: " 10", periodRange: "17:00-18:00" },
+			{ periodName: "1", periodRange: "08:00-09:00" },
+			{ periodName: "2", periodRange: "09:00-10:00" },
+			{ periodName: "3", periodRange: "10:00-11:00" },
+			{ periodName: "4", periodRange: "11:00-12:00" },
+			{ periodName: "5", periodRange: "12:00-13:00" },
+			{ periodName: "6", periodRange: "13:00-14:00" },
+			{ periodName: "7", periodRange: "14:00-15:00" },
+			{ periodName: "8", periodRange: "15:00-16:00" },
+			{ periodName: "9", periodRange: "16:00-17:00" },
+			{ periodName: "10", periodRange: "17:00-18:00" },
 		];
 		const savedPeriods = await Period.insertMany(periods);
 		console.log("Populate programs ...");
@@ -89,7 +91,7 @@ const populateDatabase = async (req, res) => {
 			{ programName: "Biology" },
 			{ programName: "Chemistry" },
 			{ programName: "Mathematics" },
-			{ programName: "Economics" },
+			{ programName: "BioChemistry" },
 			{ programName: "Statistics" },
 		];
 		const savedPrograms = await Program.insertMany(programs);
