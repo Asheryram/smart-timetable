@@ -2,7 +2,7 @@ const RoomAvailability = require("../models/RoomAvailability");
 
 const getFilteredRooms =async()=>{
 	
-	const data = await RoomAvailability.find()
+	const data = await RoomAvailability.find({ isAvailable: true })
 	.populate({
 		path: "roomId",
 		populate: {
@@ -29,7 +29,7 @@ return filtered
 
 const getAllRoomAvailability = async (req, res) => {
 	try {
-		const filtered = getFilteredRooms()
+		const filtered = await getFilteredRooms()
 		res.status(200).json(filtered);
 	} catch (error) {
 		res.status(500).json({ error: error.message });
