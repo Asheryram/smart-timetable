@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 // MongoDB Connection URI
-const uri = 'mongodb+srv://ashertettehabotsi:3m1NqZbDZ2m81AYQ@cluster0.bizxif1.mongodb.net/SMART_TIME_TABLE?retryWrites=true&w=majority&appName=Cluster01';
+const uri = 'mongodb+srv://ashertettehabotsi:3m1NqZbDZ2m81AYQ@cluster0.bizxif1.mongodb.net/SMART_TIME_TABLE_V?retryWrites=true&w=majority&appName=Cluster01';
 
 const connectDB = async () => {
     try {

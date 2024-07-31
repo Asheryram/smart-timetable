@@ -5,30 +5,6 @@ import Overview from "../components/Overview"
 import Programs from "../components/Programs"
 import Rooms from "../components/Rooms"
 
-// Components for different sections of the dashboard
-// const Index = () => (
-//   <Container>
-//     <Typography variant="h4">Schedules</Typography>
-//   </Container>
-// );
-
-// const Programs = () => (
-//   <Container>
-//     <Typography variant="h4">Programs</Typography>
-//   </Container>
-// );
-
-// const Overview = () => (
-//   <Container>
-//     <Typography variant="h4">Overview</Typography>
-//   </Container>
-// );
-
-// const Rooms = () => (
-//   <Container>
-//     <Typography variant="h4">Rooms</Typography>
-//   </Container>
-// );
 
 const Auth = () => {
   const [activeComponent, setActiveComponent] = useState('index');

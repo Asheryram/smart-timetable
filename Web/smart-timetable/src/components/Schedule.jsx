@@ -12,16 +12,17 @@ const Schedule = () => {
   };
 
   const handleSubmit = async () => {
-    if (!inputValue) {
-      setError('Input cannot be empty');
-      return;
-    }
     setLoading(true);
     setError('');
 
     try {
-      const response = await axios.post(`/schedule/${inputValue}`);
+      const response = await axios.post(`/schedule/2024A`);
       console.log('Response:', response.data);
+
+      if(response.data.message === "success"){
+        toast.success("Time table Scheduled")
+      }
+    
     } catch (err) {
       setError('An error occurred while sending data');
     } finally {
@@ -40,15 +41,15 @@ const Schedule = () => {
         minHeight="70vh"
       >
         <Typography variant="h5" gutterBottom>
-          Schedule
+         Please click to initiate automatic scheduling
         </Typography>
-        <TextField
+        {/* <TextField
           label="Enter Schedule"
           variant="outlined"
           value={inputValue}
           onChange={handleInputChange}
           sx={{ mb: 2 }}
-        />
+        /> */}
         <Button
           variant="contained"
           color="primary"

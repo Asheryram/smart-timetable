@@ -7,7 +7,7 @@ import RoomAvailability from '../components/RoomAvailability';
 import Login from './Login'; 
 
 const Home = () => {
-  const [view, setView] = useState('home');
+  const [view, setView] = useState('roomAvailability');
   const [openLogin, setOpenLogin] = useState(false);
 
   const handleViewChange = (viewName) => {
@@ -26,11 +26,11 @@ const Home = () => {
     <Container>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
+          {/* <IconButton edge="start" color="inherit" aria-label="menu">
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Timetable System
+           Smart Timetable
           </Typography>
           <Button color="inherit" onClick={() => handleViewChange('programs')}>Programs</Button>
           <Button color="inherit" onClick={() => handleViewChange('rooms')}>Rooms</Button>
