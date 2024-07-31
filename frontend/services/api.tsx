@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Define the base URL for the API
-const API_BASE_URL = 'http://10.133.210.43:5000/api';
+const API_BASE_URL = 'http://192.168.56.1:5000/api';
 
 // Define types for the timetable data
 interface TimetablePeriod {
@@ -26,7 +26,6 @@ export const fetchTimetable = async (): Promise<Timetable> => {
     return response.data;
   } catch (error) {
     console.error('Error fetching timetable:', error);
-    throw error;
   }
 };
 

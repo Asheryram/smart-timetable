@@ -7,8 +7,11 @@ const timeTableRoutes = require('./routes/timeTableRoutes');
 const populateRoutes = require('./routes/populateRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const roomAvailabilityRoutes = require('./routes/roomAvailabilityRoutes');
+const cors = require('cors');
+
 
 const app = express();
+app.use(cors());
 const port = 5000;
 
 connectDB();

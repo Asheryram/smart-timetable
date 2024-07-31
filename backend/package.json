@@ -10,6 +10,7 @@
   "author": "Joana and Yram CS3",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "mongodb": "^6.6.2",
     "mongoose": "^8.3.5",

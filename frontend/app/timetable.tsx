@@ -53,7 +53,7 @@ export default function App() {
 
   const handleDownload = async () => {
     if (tableData.length) {
-      const csvData = convertToCSV(tableData.flat());
+      const csvData = convertToCSV(tableData?.flat());
       const fileUri = FileSystem.documentDirectory + 'tableData.csv';
 
       await FileSystem.writeAsStringAsync(fileUri, csvData, { encoding: FileSystem.EncodingType.UTF8 });
@@ -80,32 +80,50 @@ export default function App() {
   );
 
   return (
-    <View style={styles.container}>
-      <AntDesign name="arrowleft" size={34} color="black" style={styles.backIcon} onPress={() => router.back()} />
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : (
-        <FlatList
-          data={tableData}
-          renderItem={renderTable}
-          keyExtractor={(item, index) => index.toString()}
-          ListFooterComponent={<Button title="Download Table" onPress={handleDownload} />}
-        />
-      )}
-    </View>
+<View style={styles.container}>
+<AntDesign name="arrowleft" size={34} color="black" style={styles.backIcon} onPress={() => router.back()} />
+{loading ? (
+  <View style={styles.loadingContainer}>
+    <Text>Loading...</Text>
+  </View>
+) : (
+  <View style={styles.contentContainer}>
+    <FlatList
+      data={tableData}
+      renderItem={renderTable}
+      keyExtractor={(item, index) => index.toString()}
+    />
+    <Button title="Download Table" onPress={handleDownload} style={styles.downloadButton} />
+  </View>
+)}
+</View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  tableContainer: { marginBottom: 20, marginTop:80},
-  head: { height: 40, backgroundColor: '#f1f8ff' },
-  text: { margin: 6, textAlign: 'center' },
-  tableBorder: { borderWidth: 1, borderColor: '#C1C0B9' },
-
+  container: {
+    flex: 1,
+    paddingTop: 40,
+  },
   backIcon: {
     position: 'absolute',
-    top: 30,
+    top: 10,
     left: 10,
+  },
+  loadingContainer: {
+    marginTop: 200,
+    alignItems: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    paddingBottom: 70, // To ensure the flatlist is not hidden behind the button
+  },
+  downloadButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    marginLeft: 20,
+    marginRight: 20
   },
 });

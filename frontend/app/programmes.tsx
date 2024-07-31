@@ -20,6 +20,7 @@ export default function App() {
     const fetchTimetableData = async () => {
       try {
         const data = await fetchTimetable();
+        console.log("Response from backend", data)
 
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         const periods = Array.from({ length: 10 }, (_, i) => `Period ${i + 1}`);
@@ -28,7 +29,7 @@ export default function App() {
           return [
             day,
             ...periods.map(period => {
-              const schedule = data.find(
+              const schedule = data?.find(
                 item => item.day === day && `Period ${item.period.trim()}` === period
               );
               return schedule ? `${schedule.courseName}\n${schedule.roomName}` : '';
@@ -81,31 +82,49 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-        <AntDesign name="arrowleft" size={34} color="black" style={styles.backIcon} onPress={() => router.back()} />
+      <AntDesign name="arrowleft" size={34} color="black" style={styles.backIcon} onPress={() => router.back()} />
       {loading ? (
-        <Text>Loading...</Text>
+        <View style={styles.loadingContainer}>
+          <Text>Loading...</Text>
+        </View>
       ) : (
-        <FlatList
-          data={tableData}
-          renderItem={renderTable}
-          keyExtractor={(item, index) => index.toString()}
-          ListFooterComponent={<Button title="Download Table" onPress={handleDownload} />}
-        />
+        <View style={styles.contentContainer}>
+          <FlatList
+            data={tableData}
+            renderItem={renderTable}
+            keyExtractor={(item, index) => index.toString()}
+          />
+          <Button title="Download Table" onPress={handleDownload} style={styles.downloadButton} />
+        </View>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  tableContainer: { marginBottom: 20, marginTop:80 },
-  head: { height: 40, backgroundColor: '#f1f8ff' },
-  text: { margin: 6, textAlign: 'center' },
-  tableBorder: { borderWidth: 1, borderColor: '#C1C0B9' },
-
+  container: {
+    flex: 1,
+    paddingTop: 40,
+  },
   backIcon: {
     position: 'absolute',
-    top: 30,
+    top: 10,
     left: 10,
+  },
+  loadingContainer: {
+    marginTop: 200,
+    alignItems: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    paddingBottom: 70, // To ensure the flatlist is not hidden behind the button
+  },
+  downloadButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    marginLeft: 20,
+    marginRight: 20
   },
 });
