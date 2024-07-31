@@ -1,45 +1,47 @@
-import React, { useRef,useEffect,useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
-import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
+import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
 import axios from '../services/axios';
 
 const Programs = () => {
-const [scheduledTimetable,setScheduledTimeTable]= useState([])
-
-
-
-const timetableByYearGroupAndProgram = scheduledTimetable.reduce((acc, curr) => {
-  const key = `${curr.program} ${curr.yearGroup}`;
-  if (!acc[key]) {
-    acc[key] = {};
-  }
-  if (!acc[key][curr.day]) {
-    acc[key][curr.day] = {};
-  }
-  acc[key][curr.day][curr.period] = curr;
-  return acc;
-}, {});
+  const [scheduledTimetable, setScheduledTimeTable] = useState([]);
 
   useEffect(() => {
-		const fetchTimeTable = async () => {
-			try {
-				const res= await axios.get("/schedule/2024A");
-        console.log(res)
-        if(res.data){
-          setScheduledTimeTable(res?.data);
-
+    const fetchTimeTable = async () => {
+      try {
+        const res = await axios.get("/schedule/2024A");
+        console.log(res);
+        if (Array.isArray(res.data)) {
+          setScheduledTimeTable(res.data);
+        } else {
+          console.error("Unexpected data format:", res.data);
+          setScheduledTimeTable([]);
         }
-			} catch (error) {
-				console.error("Error fetching room availability:", error);
-				setScheduledTimeTable([]);
-			}
-		};
+      } catch (error) {
+        console.error("Error fetching room availability:", error);
+        setScheduledTimeTable([]);
+      }
+    };
 
-    fetchTimeTable()
-	}, []);
+    fetchTimeTable();
+  }, []);
 
+  let timetableByYearGroupAndProgram = {};
+  if (Array.isArray(scheduledTimetable)) {
+    timetableByYearGroupAndProgram = scheduledTimetable.reduce((acc, curr) => {
+      const key = `${curr.program} ${curr.yearGroup}`;
+      if (!acc[key]) {
+        acc[key] = {};
+      }
+      if (!acc[key][curr.day]) {
+        acc[key][curr.day] = {};
+      }
+      acc[key][curr.day][curr.period] = curr;
+      return acc;
+    }, {});
+  }
 
   const tableRef = useRef(null);
 
@@ -49,7 +51,7 @@ const timetableByYearGroupAndProgram = scheduledTimetable.reduce((acc, curr) => 
     if (tableRef.current) {
       const canvas = await html2canvas(tableRef.current);
       const imgData = canvas.toDataURL('image/png');
-      
+
       doc.addImage(imgData, 'PNG', 10, 10);
       doc.save('class-timetable.pdf');
     }

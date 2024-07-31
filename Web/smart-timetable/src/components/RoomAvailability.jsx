@@ -28,6 +28,10 @@ const RoomAvailability = () => {
 			<Typography variant="h4" gutterBottom>
 				Room Availability
 			</Typography>
+			{
+				rooms?.length === "0" ?  <Typography>Data is empty</Typography> :""
+			}
+			
 			<Grid container spacing={3}>
 				{rooms?.map((room) => (
 					<Grid item xs={12} sm={6} md={4} key={room.id}>
