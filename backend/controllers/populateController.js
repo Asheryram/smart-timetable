@@ -225,7 +225,7 @@ const populateDatabase = async (req, res) => {
                 }
             }
         }
-        await RoomAvailability.insertMany(roomAvailabilityData);
+        // await RoomAvailability.insertMany(roomAvailabilityData);
 
         console.log("Populate students ...");
 

@@ -5,10 +5,18 @@ const { getFilteredCourses } = require("./courseController");
 const Room = require("../models/Room");
 const Period = require("../models/Period");
 const Day = require("../models/Day");
-
+const Code = require("../models/Code");
 const getAllSchedules = async (req, res) => {
-	const { code } = req.params;
+
 	try {
+		const latestCode = await Code.findOne().sort({ timestamp: -1 }).exec();
+		if (!latestCode) {
+			return res.status(200).json({ message: "No codes found" });
+		}
+		
+		const code = latestCode.code
+		console.log(code)
+
 		const timeTable = await TimeTable.find({ code });
 		res.status(200).json(timeTable);
 	} catch (error) {
@@ -16,21 +24,68 @@ const getAllSchedules = async (req, res) => {
 	}
 };
 
-
 const generateAllSchedules = async (req, res) => {
-	const { code } = req.params;
 	try {
-		const roomsAvailability = await getFilteredRooms();
-		const courses = await getFilteredCourses();
+		// Generate a new code
+		const newCode = `CODE-${Date.now()}`;
+		const codeEntry = new Code({ code: newCode });
+		await codeEntry.save();
+		console.log("New code saved:", newCode);
+		// Fetch all days
+		const savedDays = await Day.find();
+		console.log("Saved days:", savedDays);
 
+		// Fetch all periods
+		const savedPeriods = await Period.find();
+		console.log("Saved periods:", savedPeriods);
+		// Fetch all rooms with populated roomTypeId
+		const allRooms = await Room.find().populate("roomTypeId");
+		console.log("All rooms:", allRooms);
+
+		// Filter rooms to exclude those with room type "Office"
+		const nonOfficeRooms = allRooms.filter(
+			(room) => room.roomTypeId.roomTypeName !== "Office"
+		);
+		console.log("Non-office rooms:", nonOfficeRooms);
+
+		// Prepare room availability data
+		const roomAvailabilityData = [];
+		for (const room of nonOfficeRooms) {
+			for (const day of savedDays) {
+				for (const period of savedPeriods) {
+					roomAvailabilityData.push({
+						roomId: room._id,
+						isAvailable: true,
+						periodId: period._id,
+						dayId: day._id,
+						code: newCode,
+					});
+				}
+			}
+		}
+		await RoomAvailability.insertMany(roomAvailabilityData);
+		console.log("Room availability data inserted.");
+
+		// Get filtered rooms and courses
+		const roomsAvailability = await getFilteredRooms();
+		console.log("Rooms availability:", roomsAvailability);
+
+		const courses = await getFilteredCourses();
+		console.log("Courses:", courses);
+
+		// Generate timetable
 		const scheduledTimetable = await timeTableAlgorithm(
 			roomsAvailability,
 			courses,
-			code
+			newCode
 		);
+		console.log("Scheduled timetable:", scheduledTimetable);
+
+		// Save the timetable
 		await TimeTable.insertMany(scheduledTimetable);
 		res.status(200).json({ scheduledTimetable, message: "success" });
 	} catch (error) {
+		console.error("Error in generateAllSchedules:", error);
 		res.status(500).json({ error: error.message });
 	}
 };
@@ -154,7 +209,7 @@ const timeTableAlgorithm = async (roomsAvailability, courses, code) => {
 			});
 		}
 	}
-console.log("Unscheduled array", unscheduledCourses)
+	console.log("Unscheduled array", unscheduledCourses);
 	// Fetch updated room availability for unscheduled courses
 	const updatedRoomsAvailability = await getFilteredRooms(); // Get current room availability
 
@@ -249,12 +304,10 @@ console.log("Unscheduled array", unscheduledCourses)
 			dayIndex += 1;
 		}
 	}
-	console.log(scheduledTimetable)
+	console.log(scheduledTimetable);
 
 	return scheduledTimetable;
 };
-
-
 
 module.exports = {
 	getAllSchedules,

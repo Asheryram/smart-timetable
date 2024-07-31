@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Box, Typography, Paper } from '@mui/material';
 import { PieChart, Pie, Tooltip, Cell } from 'recharts';
-import axios from 'axios';
-
+import axios from "../services/axios"
 const Overview = () => {
-  const [studentsCount, setStudentsCount] = useState(0);
-  const [chartData, setChartData] = useState([
-    { name: 'Optimal Scheduled Courses', value: 50 },
-    { name: 'Less Optimal Schedules', value: 19 }
-  ]);
+
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    // Fetch data from the backend when the component mounts
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/overview');
-        const { numberOfStudents, optimalCourses, lessOptimalCourses } = response.data;
+        const response = await axios.get('/schedule/2024A');
+        const timetableData = response?.data;
 
-        setStudentsCount(numberOfStudents);
+        let optimalCourses = 0;
+        let lessOptimalCourses = 0;
+
+        timetableData.forEach(course => {
+          if (course.scheduled) {
+            optimalCourses++;
+          } else {
+            lessOptimalCourses++;
+          }
+        });
+        console.log([
+          { name: 'Optimal Scheduled Courses', value: optimalCourses },
+          { name: 'Less Optimal Schedules', value: lessOptimalCourses }
+        ])
         setChartData([
           { name: 'Optimal Scheduled Courses', value: optimalCourses },
           { name: 'Less Optimal Schedules', value: lessOptimalCourses }
@@ -40,10 +48,7 @@ const Overview = () => {
           </Typography>
           <PieChart width={400} height={300}>
             <Pie
-              data={[
-                { name: 'Optimal Scheduled Courses', value: 50 },
-                { name: 'Less Optimal Schedules', value: 19 }
-              ]}
+              data={chartData}
               dataKey="value"
               nameKey="name"
               outerRadius={120}

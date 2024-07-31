@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, TextField, Container, Box, Typography } from '@mui/material';
-import axios from 'axios';
+import axios from '../services/axios';
 
 const Schedule = () => {
   const [inputValue, setInputValue] = useState('');
@@ -20,8 +20,7 @@ const Schedule = () => {
     setError('');
 
     try {
-      const response = await axios.post('/api/schedule', { data: inputValue });
-      // Handle response as needed
+      const response = await axios.post(`/schedule/${inputValue}`);
       console.log('Response:', response.data);
     } catch (err) {
       setError('An error occurred while sending data');
