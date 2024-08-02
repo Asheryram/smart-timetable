@@ -130,7 +130,13 @@ const populateDatabase = async (req, res) => {
             { courseCode: "CHE401", courseName: "Inorganic Chemistry" },
             { courseCode: "BIO401", courseName: "Evolutionary Biology" },
             { courseCode: "MTH401", courseName: "Differential Equations" },
+            { courseCode: "CSM501", courseName: "Data Science" }, 
+            { courseCode: "PHY501", courseName: "Nuclear Physics" }, 
+            { courseCode: "CHE501", courseName: "Biochemistry" }, 
+            { courseCode: "BIO501", courseName: "Ecology" }, 
+            { courseCode: "MTH501", courseName: "Abstract Algebra" } 
         ];
+        
         const savedCourses = await Course.insertMany(courses);
 
         console.log("Populate course instances ...");
@@ -272,6 +278,41 @@ const populateDatabase = async (req, res) => {
             },
             {
                 courseId: savedCourses[19]._id, // MTH401
+                programId: savedPrograms[4]._id, // Mathematics
+                yearGroupId: savedYearGroups[3]._id, // Year 4
+                maxHoursPerDay: 2,
+                numMeetingTimes: 2,
+            },
+            {
+                courseId: savedCourses[20]._id, // CSM501
+                programId: savedPrograms[0]._id, // Computer Science
+                yearGroupId: savedYearGroups[3]._id, // Year 4
+                maxHoursPerDay: 2,
+                numMeetingTimes: 2,
+            },
+            {
+                courseId: savedCourses[21]._id, // PHY501
+                programId: savedPrograms[1]._id, // Physics
+                yearGroupId: savedYearGroups[3]._id, // Year 4
+                maxHoursPerDay: 2,
+                numMeetingTimes: 2,
+            },
+            {
+                courseId: savedCourses[22]._id, // CHE501
+                programId: savedPrograms[2]._id, // Chemistry
+                yearGroupId: savedYearGroups[3]._id, // Year 4
+                maxHoursPerDay: 2,
+                numMeetingTimes: 2,
+            },
+            {
+                courseId: savedCourses[23]._id, // BIO501
+                programId: savedPrograms[2]._id, // Biology
+                yearGroupId: savedYearGroups[3]._id, // Year 4
+                maxHoursPerDay: 2,
+                numMeetingTimes: 2,
+            },
+            {
+                courseId: savedCourses[24]._id, // MTH501
                 programId: savedPrograms[4]._id, // Mathematics
                 yearGroupId: savedYearGroups[3]._id, // Year 4
                 maxHoursPerDay: 2,

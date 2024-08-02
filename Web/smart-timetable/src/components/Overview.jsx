@@ -17,7 +17,8 @@ const Overview = () => {
         let optimalCourses = 0;
         let lessOptimalCourses = 0;
 
-        timetableData?.forEach(course => {
+        if(timetableData){
+        timetableData?.map(course => {
           if (course.scheduled) {
             optimalCourses++;
           } else {
@@ -32,6 +33,10 @@ const Overview = () => {
           { name: 'Optimal Scheduled Courses', value: optimalCourses },
           { name: 'Less Optimal Schedules', value: lessOptimalCourses }
         ]);
+      }else{
+        setChartData([])
+      }
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -49,7 +54,7 @@ const Overview = () => {
             Optimality Chart
           </Typography>
 {
-  chartData?.[0]?.value === 0 ? <NoDataAvailable/> : ""
+  chartData.length === 0 || (chartData[0].value === 0 && chartData[1].value === 0)  ? <NoDataAvailable/> : ""
 }
 
           <PieChart width={400} height={300}>
