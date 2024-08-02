@@ -4,22 +4,31 @@ import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
 import axios from '../services/axios';
+import NoDataAvailable from './NoDataAvailable'
+import Loading from './Loading'
 
 const Programs = () => {
   const [scheduledTimetable, setScheduledTimeTable] = useState([]);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchTimeTable = async () => {
+      setLoading(true)
       try {
         const res = await axios.get("/schedule/2024A");
         console.log(res);
         if (Array.isArray(res.data)) {
+          setLoading(false)
           setScheduledTimeTable(res.data);
         } else {
           console.error("Unexpected data format:", res.data);
+          setLoading(false)
+
           setScheduledTimeTable([]);
+
         }
       } catch (error) {
+        setLoading(false)
         console.error("Error fetching room availability:", error);
         setScheduledTimeTable([]);
       }
@@ -60,6 +69,15 @@ const Programs = () => {
   return (
     <Container>
       <Button variant="contained" color="primary" onClick={generatePDF}>Generate PDF</Button>
+
+{
+  loading ?  <Loading/> :  
+
+
+  <div>
+{
+        scheduledTimetable.length === 0 ? <NoDataAvailable/> : ""
+      }
       <TableContainer ref={tableRef}>
         {Object.entries(timetableByYearGroupAndProgram).map(([program, days]) => (
           <Table className="my-3 bg-white" key={program}>
@@ -96,6 +114,13 @@ const Programs = () => {
           </Table>
         ))}
       </TableContainer>
+
+</div>
+}
+
+
+
+     
     </Container>
   );
 };

@@ -4,7 +4,7 @@ import Schedule from "../components/Schedule"
 import Overview from "../components/Overview"
 import Programs from "../components/Programs"
 import Rooms from "../components/Rooms"
-
+import {Toaster} from "react-hot-toast"
 
 const Auth = () => {
   const [activeComponent, setActiveComponent] = useState('index');
@@ -24,6 +24,7 @@ const Auth = () => {
 
   return (
     <div>
+      <Toaster/>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6">Smart TT</Typography>

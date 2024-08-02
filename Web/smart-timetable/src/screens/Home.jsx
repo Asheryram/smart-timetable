@@ -5,6 +5,8 @@ import Programs from '../components/Programs';
 import Rooms from '../components/Rooms';
 import RoomAvailability from '../components/RoomAvailability'; 
 import Login from './Login'; 
+import {Toaster} from "react-hot-toast";
+
 
 const Home = () => {
   const [view, setView] = useState('roomAvailability');

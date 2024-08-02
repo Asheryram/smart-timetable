@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Container, Box, Typography, Paper } from '@mui/material';
 import { PieChart, Pie, Tooltip, Cell } from 'recharts';
 import axios from "../services/axios"
+import NoDataAvailable from './NoDataAvailable'
+
 const Overview = () => {
 
   const [chartData, setChartData] = useState([]);
@@ -15,7 +17,7 @@ const Overview = () => {
         let optimalCourses = 0;
         let lessOptimalCourses = 0;
 
-        timetableData.forEach(course => {
+        timetableData?.forEach(course => {
           if (course.scheduled) {
             optimalCourses++;
           } else {
@@ -46,6 +48,10 @@ const Overview = () => {
           <Typography variant="h6" gutterBottom>
             Optimality Chart
           </Typography>
+{
+  chartData?.[0]?.value === 0 ? <NoDataAvailable/> : ""
+}
+
           <PieChart width={400} height={300}>
             <Pie
               data={chartData}

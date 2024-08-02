@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Card, CardContent, Typography, Grid } from "@mui/material";
 import axios from "../services/axios";
+import NoDataAvailable from './NoDataAvailable'
 
 const RoomAvailability = () => {
 	const [rooms, setRooms] = useState([]);
@@ -29,7 +30,7 @@ const RoomAvailability = () => {
 				Room Availability
 			</Typography>
 			{
-				rooms?.length === "0" ?  <Typography>Data is empty</Typography> :""
+				rooms?.length === "0" ?  <NoDataAvailable/> :""
 			}
 			
 			<Grid container spacing={3}>

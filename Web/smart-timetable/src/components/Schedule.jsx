@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Button, TextField, Container, Box, Typography } from '@mui/material';
 import axios from '../services/axios';
+import {toast,Toaster} from "react-hot-toast"
 
 const Schedule = () => {
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [ploading, setPLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleInputChange = (event) => {
@@ -24,15 +26,47 @@ const Schedule = () => {
       }
     
     } catch (err) {
-      setError('An error occurred while sending data');
+      console.error('An error occurred while sending data',error);
     } finally {
       setLoading(false);
+      setInputValue('');
+    }
+  };
+  const handlePSubmit = async () => {
+    setPLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post(`/populate`);
+      console.log('Response:', response.data);
+
+      if(response.data.status === "success"){
+        toast.success("Database populated")
+      }
+    
+    } catch (err) {
+      console.error('An error occurred while sending data',error);
+    } finally {
+      setPLoading(false);
       setInputValue('');
     }
   };
 
   return (
     <Container>
+ <Typography variant="h5" gutterBottom>
+         Please click to fill the database with test data
+        </Typography>
+<Button
+          variant="contained"
+          color="primary"
+          onClick={handlePSubmit}
+          disabled={ploading}
+        >
+          {ploading ? 'Populating...' : 'Populate Database'}
+        </Button>
+
+
       <Box
         display="flex"
         flexDirection="column"
@@ -43,13 +77,8 @@ const Schedule = () => {
         <Typography variant="h5" gutterBottom>
          Please click to initiate automatic scheduling
         </Typography>
-        {/* <TextField
-          label="Enter Schedule"
-          variant="outlined"
-          value={inputValue}
-          onChange={handleInputChange}
-          sx={{ mb: 2 }}
-        /> */}
+       
+       
         <Button
           variant="contained"
           color="primary"
@@ -64,6 +93,7 @@ const Schedule = () => {
           </Typography>
         )}
       </Box>
+      <Toaster/>
     </Container>
   );
 };
